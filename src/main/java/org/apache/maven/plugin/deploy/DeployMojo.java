@@ -27,7 +27,6 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -37,6 +36,7 @@ import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 
  * @author <a href="mailto:evenisse@apache.org">Emmanuel Venisse</a>
  * @author <a href="mailto:jdcasey@apache.org">John Casey (refactoring only)</a>
- * @version $Id$
+ * @version $Id: DeployMojo.java 1620080 2014-08-23 21:34:57Z khmarbaise $
  */
 @Mojo( name = "deploy", defaultPhase = LifecyclePhase.DEPLOY, threadSafe = true )
 public class DeployMojo
@@ -201,7 +201,8 @@ public class DeployMojo
         File pomFile = request.getProject().getFile();
 
         @SuppressWarnings( "unchecked" )
-        List<Artifact> attachedArtifacts = request.getProject().getAttachedArtifacts();
+        LinkedHashSet<Artifact> attachedArtifacts =
+            new LinkedHashSet(request.getProject().getAttachedArtifacts());
 
         ArtifactRepository repo =
             getDeploymentRepository( request.getProject(), request.getAltDeploymentRepository(),
